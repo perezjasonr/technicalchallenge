@@ -128,10 +128,10 @@ def main():
     print(response)
 
     # courtesy cleanup section
-    sgresponse = security_group.delete(
-    GroupName='techchalsg',
-    DryRun=False
-    )
+    # sgresponse = security_group.delete(
+    # GroupName='techchalsg',
+    # DryRun=False
+    # )
 
 if __name__ == "__main__":
     main()
