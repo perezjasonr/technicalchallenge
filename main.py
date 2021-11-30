@@ -6,7 +6,7 @@ def main():
     # create sg
     sgresponse = client.create_security_group(
         Description='technical challenge sg',
-        GroupName='techchalsg',
+        GroupName='techchalsg5',
         VpcId='vpc-038af654e26ee20df',
         TagSpecifications=[
             {
@@ -19,7 +19,7 @@ def main():
                 ]
             },
         ],
-        DryRun=True
+        DryRun=False
     )
 
 
@@ -52,12 +52,12 @@ def main():
                 'ToPort': 80,
             }
         ],
-        DryRun=True
+        DryRun=False
     )
 
     # sg rules egress
     egressresponse = security_group.authorize_egress(
-        DryRun=True,
+        DryRun=False,
         IpPermissions=[
             {
                 'FromPort': 80,
@@ -88,23 +88,26 @@ def main():
     response = client.run_instances(
         ImageId='ami-0d15082500b576303',
         InstanceType='t3.micro',
-        Placement={
-            'AvailabilityZone': 'eu-north-1'
-        },
+        #Placement={
+        #    'AvailabilityZone': 'something'
+        #},
         SecurityGroupIds=[
             sgresponse["GroupId"],
         ],
         SubnetId='subnet-0ba47feb798f9e376',
-        DryRun=True,
+        MaxCount=1,
+        MinCount=1,
+        DryRun=False,
         # InstanceInitiatedShutdownBehavior='stop'|'terminate',
-        NetworkInterfaces=[
-            {
-                'AssociatePublicIpAddress': True,
-                'DeleteOnTermination': True,
-                'Description': 'technical challenge ec2',
-                'SubnetId': 'subnet-0ba47feb798f9e376',
-            }
-        ],
+        # NetworkInterfaces=[
+        #     {
+        #         'AssociatePublicIpAddress': True,
+        #         'DeleteOnTermination': True,
+        #         'Description': 'technical challenge ec2',
+        #         'SubnetId': 'subnet-0ba47feb798f9e376',
+        #         'DeviceIndex': 0
+        #     }
+        # ],
         TagSpecifications=[
             {
                 'ResourceType': 'instance',
@@ -123,6 +126,12 @@ def main():
     print(ingressresponse)
     print(egressresponse)
     print(response)
+
+    # courtesy cleanup section
+    sgresponse = security_group.delete(
+    GroupName='techchalsg',
+    DryRun=False
+    )
 
 if __name__ == "__main__":
     main()
